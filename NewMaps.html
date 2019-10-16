@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+form{
+  border: 3px solid #f1f1f1;
+
+}
+input[input=text]{
+  width: 100%;
+  padding: 12px 12px;
+  margin: auto;
+  color: grey;
+  display: inline-block;
+  border: 4px solid #ccc;
+  box-sizing: content-box;
+}
+
+button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 12px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: inherit;
+}
+
+
+  </style>
+</head>
+<body>
+<!--
+<div class="mapouter"><div class="gmap_canvas"><iframe width="600" height="500" id="gmap_canvas" src="https://maps.google.com/maps?q=indore&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe><a href="https://www.embedgooglemap.net/blog/elementor-pro-discount-code-review/">elementor pro discount code</a></div><style>.mapouter{position:relative;text-align:right;height:500px;width:600px;}.gmap_canvas {overflow:hidden;background:none!important;height:500px;width:600px;}</style></div> -->
+
+  <!-- <div id="map" style="width:100%;height:400px;">My map will go here</div> -->
+
+<p>Click the button to get your coordinates.</p>
+
+<button onclick="getLocation()" >Try It</button>
+
+<p id="demo"></p>
+<div class="Journey">
+
+<form action="index.html" method="post">
+
+    <h1>Journey Planner</h1>
+    <b>From</b><input type="text" name="Aadarsh Nagar" />
+    <br />
+    <b>To</b>
+    <input type="text" name="Aadarsh Nagar" />
+    <br />
+    <button type="button" name="fare">Show Route and Fare</button>
+  </form>
+
+</div>
+
+<script>
+var x = document.getElementById("demo");
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } else {
+    x.innerHTML = "Geolocation is not supported by this browser.";
+  }
+}
+
+function showPosition(position) {
+  x.innerHTML = "Latitude: " + position.coords.latitude +
+  "<br>Longitude: " + position.coords.longitude;
+}
+
+</script>
+
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=places"></script>
+<script type="text/javascript">
+var source, destination;
+var directionsDisplay;
+var directionsService = new google.maps.DirectionsService();
+google.maps.event.addDomListener(window, 'load', function () {
+    new google.maps.places.SearchBox(document.getElementById('txtSource'));
+    new google.maps.places.SearchBox(document.getElementById('txtDestination'));
+    directionsDisplay = new google.maps.DirectionsRenderer({ 'draggable': true });
+});
+
+function GetRoute() {
+    var mumbai = new google.maps.LatLng(18.9750, 72.8258);
+    var mapOptions = {
+        zoom: 7,
+        center: mumbai
+    };
+    map = new google.maps.Map(document.getElementById('dvMap'), mapOptions);
+    directionsDisplay.setMap(map);
+    directionsDisplay.setPanel(document.getElementById('dvPanel'));
+
+    //*********DIRECTIONS AND ROUTE**********************//
+    source = document.getElementById("txtSource").value;
+    destination = document.getElementById("txtDestination").value;
+
+    var request = {
+        origin: source,
+        destination: destination,
+        travelMode: google.maps.TravelMode.DRIVING
+    };
+    directionsService.route(request, function (response, status) {
+        if (status == google.maps.DirectionsStatus.OK) {
+            directionsDisplay.setDirections(response);
+        }
+    });
+
+    //*********DISTANCE AND DURATION**********************//
+    var service = new google.maps.DistanceMatrixService();
+    service.getDistanceMatrix({
+        origins: [source],
+        destinations: [destination],
+        travelMode: google.maps.TravelMode.DRIVING,
+        unitSystem: google.maps.UnitSystem.METRIC,
+        avoidHighways: false,
+        avoidTolls: false
+    }, function (response, status) {
+        if (status == google.maps.DistanceMatrixStatus.OK && response.rows[0].elements[0].status != "ZERO_RESULTS") {
+            var distance = response.rows[0].elements[0].distance.text;
+            var duration = response.rows[0].elements[0].duration.text;
+            var dvDistance = document.getElementById("dvDistance");
+           dvDistance.innerHTML = "";
+            dvDistance.innerHTML += "Distance: " + distance + "<br />";
+            dvDistance.innerHTML += "Duration:" + duration;
+
+        } else {
+            alert("Unable to find the distance via road.");
+        }
+    });
+}
+</script>
+
+<table border="0" cellpadding="0" cellspacing="3">
+<tr>
+    <td colspan="2">
+        Source:
+        <input type="text" id="txtSource" value="Bandra, Mumbai, India" style="width: 200px" />
+        &nbsp; Destination:
+        <input type="text" id="txtDestination" value="Andheri, Mumbai, India" style="width: 200px" />
+        <br />
+        <input type="button" value="Get Route" onclick="GetRoute()" />
+        <hr />
+    </td>
+</tr>
+<tr>
+    <td colspan="2">
+        <div id="dvDistance">
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <div id="dvMap" style="width: 500px; height: 500px">
+        </div>
+    </td>
+    <td>
+        <div id="dvPanel" style="width: 500px; height: 500px">
+        </div>
+    </td>
+</tr>
+</table>
+
+</body>
+</html>
