@@ -6,7 +6,7 @@ var path = require('path');
 var connection = mysql.createConnection({
 	host     : 'localhost',
 	user     : 'root',
-	password : '',
+	password : 'codybanks',
 	database : 'nodelogin'
 });
 
@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
 
 app.get('/', function(request, response) {
-	response.sendFile(path.join(__dirname + '/views/login.html'));
+	response.sendFile(path.join(__dirname + '/login.html'));
 });
 
 app.post('/auth', function(request, response) {
@@ -34,7 +34,7 @@ app.post('/auth', function(request, response) {
 				response.redirect('/home');
 			} else {
 				response.send('Incorrect Username and/or Password!');
-			}			
+			}
 			response.end();
 		});
 	} else {
